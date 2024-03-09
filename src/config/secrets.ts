@@ -30,3 +30,17 @@ switch (ENVIRONMENT) {
     }
     break;
 }
+
+export const DATABASE_URI = process.env['DATABASE_URI'] as string;
+
+if (!DATABASE_URI) {
+  logger.error("Couldn't find DATABASE_URI environment variable.");
+  throw Error;
+}
+
+export const SECRET_KEY = process.env['SECRET_KEY'] as string;
+
+if (!SECRET_KEY) {
+  logger.error("Couldn't find SECRET_KEY environment variable.");
+  throw Error;
+}
