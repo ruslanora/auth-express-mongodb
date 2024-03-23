@@ -4,7 +4,7 @@ import errorHandler from 'errorhandler';
 import express from 'express';
 import helmet from 'helmet';
 import mongoose from 'mongoose';
-import logger from './utils/logger';
+import logger, {loggingMiddleware} from './utils/logger';
 import routes from './api';
 import {ENVIRONMENT, DATABASE_URI} from './config/secrets';
 
@@ -31,6 +31,7 @@ app.use(cors());
 app.use(helmet());
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
+app.use(loggingMiddleware);
 
 app.use('/api', routes);
 
