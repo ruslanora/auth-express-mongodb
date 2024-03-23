@@ -7,6 +7,60 @@ import * as password from '../../utils/password';
 
 const router = Router();
 
+/**
+ * @swagger
+ * /api/v1/auth/register:
+ *  post:
+ *    summary: Register a new user
+ *    tags: [authentication]
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            required:
+ *              - email
+ *              - password1
+ *              - password2
+ *            properties:
+ *              email:
+ *                type: string
+ *                format: email
+ *              password1:
+ *                type: string
+ *                format: password
+ *                description: Primary email
+ *              password2:
+ *                type: string
+ *                format: password
+ *                description: Must match password1
+ *    responses:
+ *      201:
+ *        description: Successfully registered
+ *        content:
+ *          application/json:
+ *            schema:
+ *               type: object
+ *               properties:
+ *                 access_token:
+ *                   type: string
+ *                 access_token_expires_in:
+ *                   type: integer
+ *                 refresh_token:
+ *                   type: string
+ *                 refresh_token_expires_in:
+ *                   type: integer
+ *      400:
+ *         description: Invalid input or user already exists
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ */
 router.post('/register', async (req: Request, res: Response) => {
   const {email, password1, password2} = req.body;
 
@@ -49,6 +103,55 @@ router.post('/register', async (req: Request, res: Response) => {
   });
 });
 
+/**
+ * @swagger
+ * /api/v1/auth/login:
+ *  post:
+ *    summary: Log in
+ *    tags: [authentication]
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            required:
+ *              - email
+ *              - password
+ *            properties:
+ *              email:
+ *                type: string
+ *                format: email
+ *              password:
+ *                type: string
+ *                format: password
+ *                description: Primary email
+ *    responses:
+ *      201:
+ *        description: Successfully logged in
+ *        content:
+ *          application/json:
+ *            schema:
+ *               type: object
+ *               properties:
+ *                 access_token:
+ *                   type: string
+ *                 access_token_expires_in:
+ *                   type: integer
+ *                 refresh_token:
+ *                   type: string
+ *                 refresh_token_expires_in:
+ *                   type: integer
+ *      400:
+ *         description: Invalid input or user doesn't exist
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ */
 router.post('/login', async (req: Request, res: Response) => {
   const {email, password} = req.body;
 
@@ -80,6 +183,50 @@ router.post('/login', async (req: Request, res: Response) => {
   });
 });
 
+/**
+ * @swagger
+ * /api/v1/auth/refresh:
+ *  post:
+ *    summary: Issues a new token pair
+ *    tags: [authentication]
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            required:
+ *              - refresh_token
+ *            properties:
+ *              refresh_token:
+ *                type: string
+ *                format: string
+ *    responses:
+ *      201:
+ *        description: Successfully refreshed
+ *        content:
+ *          application/json:
+ *            schema:
+ *               type: object
+ *               properties:
+ *                 access_token:
+ *                   type: string
+ *                 access_token_expires_in:
+ *                   type: integer
+ *                 refresh_token:
+ *                   type: string
+ *                 refresh_token_expires_in:
+ *                   type: integer
+ *      400:
+ *         description: Invalid or expired refresh token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ */
 router.post('/refresh', async (req: Request, res: Response) => {
   const {refresh_token} = req.body;
 
@@ -124,6 +271,44 @@ router.post('/refresh', async (req: Request, res: Response) => {
   });
 });
 
+/**
+ * @swagger
+ * /api/v1/auth/verify:
+ *  post:
+ *    summary: Validates an access token
+ *    tags: [authentication]
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            required:
+ *              - access_token
+ *            properties:
+ *              access_token:
+ *                type: string
+ *                format: string
+ *    responses:
+ *      200:
+ *        description: The token is valid
+ *        content:
+ *          application/json:
+ *            schema:
+ *               type: object
+ *               properties:
+ *                 user_id:
+ *                   type: string
+ *      400:
+ *         description: Invalid or expired access token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ */
 router.post('/verify', (req: Request, res: Response) => {
   const {access_token} = req.body;
 
@@ -140,6 +325,44 @@ router.post('/verify', (req: Request, res: Response) => {
   return res.status(200).json({user_id: payload.id});
 });
 
+/**
+ * @swagger
+ * /api/v1/auth/revoke:
+ *  post:
+ *    summary: Blacklists a refresh token
+ *    tags: [authentication]
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            required:
+ *              - refresh_token
+ *            properties:
+ *              refresh_token:
+ *                type: string
+ *                format: string
+ *    responses:
+ *      200:
+ *        description: The token has been blacklisted
+ *        content:
+ *          application/json:
+ *            schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *      400:
+ *         description: Invalid or expired refresh token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ */
 router.post('/revoke', async (req: Request, res: Response) => {
   const {refresh_token} = req.body;
 
