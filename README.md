@@ -1,6 +1,6 @@
 # auth-express-mongodb
 
-JWT-based Authentication microservice.
+JWT-based authentication microservice.
 
 # About
 
