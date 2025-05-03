@@ -5,7 +5,7 @@ import {User} from '../../models/User';
 import * as jwt from '../../utils/jwt';
 import * as password from '../../utils/password';
 
-const router = Router();
+const router = Router({strict: false});
 
 /**
  * @swagger
@@ -61,7 +61,7 @@ const router = Router();
  *                 message:
  *                   type: string
  */
-router.post('/register', async (req: Request, res: Response) => {
+router.post('/register', async (req: Request, res: Response): Promise<any> => {
   const {email, password1, password2} = req.body;
 
   if (!email || !password1 || !password2) {
@@ -152,7 +152,7 @@ router.post('/register', async (req: Request, res: Response) => {
  *                 message:
  *                   type: string
  */
-router.post('/login', async (req: Request, res: Response) => {
+router.post('/login', async (req: Request, res: Response): Promise<any> => {
   const {email, password} = req.body;
 
   if (!email || !password) {
@@ -227,7 +227,7 @@ router.post('/login', async (req: Request, res: Response) => {
  *                 message:
  *                   type: string
  */
-router.post('/refresh', async (req: Request, res: Response) => {
+router.post('/refresh', async (req: Request, res: Response): Promise<any> => {
   const {refresh_token} = req.body;
 
   if (!refresh_token) {
@@ -309,7 +309,7 @@ router.post('/refresh', async (req: Request, res: Response) => {
  *                 message:
  *                   type: string
  */
-router.post('/verify', (req: Request, res: Response) => {
+router.post('/verify', async (req: Request, res: Response): Promise<any> => {
   const {access_token} = req.body;
 
   if (!access_token) {
@@ -363,7 +363,7 @@ router.post('/verify', (req: Request, res: Response) => {
  *                 message:
  *                   type: string
  */
-router.post('/revoke', async (req: Request, res: Response) => {
+router.post('/revoke', async (req: Request, res: Response): Promise<any> => {
   const {refresh_token} = req.body;
 
   if (!refresh_token) {
